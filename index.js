@@ -1,4 +1,5 @@
 var express = require('express')
+var config = require('./config/config');
 var dateFormat = require('dateformat')
 var app = express()
 
@@ -55,8 +56,6 @@ app.get('/', function (req, res) {
   res.status(200).json({hello: "world"})
 })
 
-app.set('port', process.env.port || 3000);
-
-app.listen(app.get('port'), '0.0.0.0', function () {
-  console.log('Example app listening on port:' + app.get('port') + '"')
-})
+app.listen(config.port, function () {
+  console.log('Express server listening on port ' + config.port);
+});
