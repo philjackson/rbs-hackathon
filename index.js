@@ -58,5 +58,5 @@ app.get('/', function (req, res) {
 app.set('port', process.env.port || 3000);
 
 app.listen(app.get('port'), '0.0.0.0', function () {
-  console.log('Example app listening on port:' + port + '"')
+  console.log('Example app listening on port:' + app.get('port') + '"')
 })
