@@ -34,7 +34,7 @@ Upcoming transactions are presented via the future API. This is similar to the t
         "transactionType": "D/D",
         "transactionDescription": "NATWEST MORTGAGES LIMITED",
         "syntheticId": "57e3b9545fcd0537745f428f",
-        "category": "clothing"
+        "category": "mortgages"
     },
 ]
 
