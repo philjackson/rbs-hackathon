@@ -44,7 +44,7 @@ GET `/api/transactions/future`
         "confidence": 0.8
     },
 ]
-
+```
 # Notifications
 
 When we think you need to know something important we expose this information via a notification api.
