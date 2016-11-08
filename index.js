@@ -1,8 +1,9 @@
 var express = require('express')
+var dateFormat = require('dateformat')
 var app = express()
 
 var transactions = []
-var futursism = {}
+var future_store = {}
 
 var bodyParser = require('body-parser')
 
@@ -14,8 +15,16 @@ app.post('/transactions', function (req, res) {
 
   req.body.map(function (item) {
     transactions.push(item)
-    var date = Date.parse(item.transactionDateTime)
-    console.log(date.getMonth())
+
+    let date = new Date(item.transactionDateTime)
+    let key = dateFormat(date, "yyyy-mm-dd")
+
+    if (! (key in future_store)) {
+      future_store[key] = []
+    }
+
+    future_store[key].push(item)
+    console.log(future_store)
   });
 
   res.status(200).send()
