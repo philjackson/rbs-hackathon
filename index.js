@@ -30,10 +30,9 @@ function onItem(item) {
     future_store[key] = []
   }
 
-  updatePayees(item)
-
   future_store[key].push(item)
 
+  updatePayees(item)
   transactions.push(item)
 }
 
@@ -43,12 +42,33 @@ app.post('/transactions', function (req, res) {
   res.status(200).send()
 })
 
-app.get('/transactions/historical', function(req, res) {
+app.get('/transactions/past', function(req, res) {
   res.send(transactions)
 })
 
+{23: { "Dave": 0.2 } }
+
+app.get('/transactions/future', function(req, res) {
+  let confidence_store_month = {}
+
+  Object.keys(future_store).map(function(k) {
+    future_store[k].map(function(v) {
+      let date = new Date(item.transactionDateTime)
+      let day = dateFormat(date, "dd")
+
+      if (! (day in confidence_store_month)) {
+        confidence_store_month[day] = {}
+      }
+
+      confidence_store_month[day][transactionDescription] = 0
+    })
+  })
+
+  res.send({})
+})
+
 app.get('/debug', function(req, res) {
-  res.send(seen_payees)
+  res.send(future_store)
 })
 
 app.get('/', function (req, res) {
