@@ -29,6 +29,8 @@ app.get('/', function (req, res) {
   res.status(200).json({hello: "world"})
 })
 
-app.listen(3000, '0.0.0.0', function () {
-  console.log('Example app listening on port 3000!')
+app.set('port', process.env.PORT || 3000);
+
+app.listen(port, '0.0.0.0', function () {
+  console.log('Example app listening on port:' + port + '"')
 })
