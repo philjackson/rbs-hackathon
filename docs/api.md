@@ -3,6 +3,8 @@ Welcome to the future
 ## Past transactions
 Transactions are presented as an array.
 
+GET `/api/transactions/historical`
+
 ```
 [
     {
@@ -24,6 +26,10 @@ The 'unfamiliar' field describes whether we've seen that transaction before.
 ## Future Transactions
 Upcoming transactions are presented via the future API. This is similar to the transaction api but the transaction id is synthetic and the transaction date and amount is estimated.
 
+Gives 30 days from today's date
+
+GET `/api/transactions/future`
+
 ```
 [
    {
@@ -43,8 +49,10 @@ Upcoming transactions are presented via the future API. This is similar to the t
 
 When we think you need to know something important we expose this information via a notification api.
 
+GET `/api/notifications`
+
 ```
-[
+ [
     {
         "notificationId":"asew-f232-1qad-2d23",
         "message":"Just letting you know that it looks like you might go overdrawn tomorrow",
@@ -63,5 +71,5 @@ When we think you need to know something important we expose this information vi
         "detail": "We've temporarily extended your overdraft to cover this amount. You need to have funds in your account by midnight tonight to avoid charges",
         "severity":"critical"
 
-]
+ ]
 ```
