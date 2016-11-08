@@ -3,7 +3,7 @@ Welcome to the future
 ## Past transactions
 Transactions are presented as an array.
 
-GET `/api/transactions/historical`
+GET `/api/transactions/past`
 
 ```
 [
