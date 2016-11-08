@@ -29,7 +29,7 @@ Upcoming transactions are presented via the future API. This is similar to the t
    {
         "accountId": "57e3b951a746a0f62525f820",
         "transactionDateTime": "2015-12-22T00:00:00.000Z",
-        "transactionAmount": 400,
+        "transactionAmount": -400,
         "accountBalance": 13186.43,
         "transactionType": "D/D",
         "transactionDescription": "NATWEST MORTGAGES LIMITED",
