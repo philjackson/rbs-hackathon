@@ -1,7 +1,7 @@
 var express = require('express')
 var config = require('./config/config')
 var dateFormat = require('dateformat')
-var app = express();
+var app = express()
 
 var transactions = []
 var future_store = {}
