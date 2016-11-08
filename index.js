@@ -11,31 +11,35 @@ var bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
+function updatePayees(item) {
+  item.unfamiliar = false
+
+  // increment the seen amounts
+  if (! seen_payees[item.transactionDescription]) {
+    seen_payees[item.transactionDescription] = 0
+    item.unfamiliar = true
+  }
+  seen_payees[item.transactionDescription] = seen_payees[item.transactionDescription] + 1
+}
+
+function onItem(item) {
+  let date = new Date(item.transactionDateTime)
+  let key = dateFormat(date, "yyyy-mm-dd")
+
+  if (! (key in future_store)) {
+    future_store[key] = []
+  }
+
+  updatePayees(item)
+
+  future_store[key].push(item)
+
+  transactions.push(item)
+}
+
 app.post('/transactions', function (req, res) {
   console.log("Received " + req.body.length + " transactions")
-
-  req.body.map(function (item) {
-    let date = new Date(item.transactionDateTime)
-    let key = dateFormat(date, "yyyy-mm-dd")
-
-    if (! (key in future_store)) {
-      future_store[key] = []
-    }
-
-    future_store[key].push(item)
-
-    item.unfamiliar = false
-
-    // increment the seen amounts
-    if (! seen_payees[item.transactionDescription]) {
-      seen_payees[item.transactionDescription] = 0
-      item.unfamiliar = true
-    }
-    seen_payees[item.transactionDescription] = seen_payees[item.transactionDescription] + 1
-
-    transactions.push(item)
-  });
-
+  req.body.map(onItem);
   res.status(200).send()
 })
 
