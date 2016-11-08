@@ -33,8 +33,9 @@ Upcoming transactions are presented via the future API. This is similar to the t
         "accountBalance": 13186.43,
         "transactionType": "D/D",
         "transactionDescription": "NATWEST MORTGAGES LIMITED",
-        "syntheticId": "57e3b9545fcd0537745f428f",
-        "category": "mortgages"
+        "id": "57e3b9545fcd0537745f428f",
+        "category": "mortgages",
+        "confidence": 0.8
     },
 ]
 
