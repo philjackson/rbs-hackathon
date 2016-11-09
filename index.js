@@ -56,17 +56,19 @@ function calculateFutureStore(){
       let month = parseInt(dateFormat(date, "mm"))
       let day = parseInt(dateFormat(date, "dd"))
       let monthCounter = ((year - 1900) * 12) + month - 1
-      console.log(monthCounter)
 
       if (! (monthCounter in confidence_store_month)) {
         confidence_store_month[monthCounter] = {}
       }
       
+      let seen = 0
       if (! (v.transactionDescription in confidence_store_month[monthCounter])) {
         confidence_store_month[monthCounter][v.transactionDescription] = {}
       }
+      else{
+        seen = confidence_store_month[monthCounter][v.transactionDescription].seen
+      }
       
-      seen = confidence_store_month[monthCounter][v.transactionDescription].seen
       confidence_store_month[monthCounter][v.transactionDescription] = {
         seen : seen + 1,
         accountId : v.accountId,
@@ -97,14 +99,15 @@ function processMonthStore(store){
     
     let seed = Object.keys(store[firstKey])
     seed.forEach(function(des){
-        runs[des] = 1;
+        if(store[firstKey][des].seen == 1)
+            runs[des] = 1
         transactionInfo[des] = store[firstKey][des]
     })
     
+    last = seed
     sorted_months.forEach(function(month){
-        last = seed
         Object.keys(store[month]).forEach(function(description){
-            if(last.indexOf(description)> -1){
+            if(last.indexOf(description)> -1 && store[month][description].seen == 1){
                 runs[description] = runs[description] + 1
             }
         })
@@ -160,7 +163,7 @@ app.get('/transactions/future', function(req, res) {
 })
 
 app.get('/debug', function(req, res) {
-  res.send(runs)
+  res.send([confidence_store_month, runs])
 })
 
 app.get('/', function (req, res) {
