@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/.bin/nodemon index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,6 +21,11 @@
     "nodemon": "^1.11.0"
   },
   "dependencies": {
+    "body-parser": "^1.15.2",
+    "dateformat": "^1.0.12",
     "express": "^4.14.0"
+  },
+  "engines": {
+    "node": "6.6.0"
   }
 }
