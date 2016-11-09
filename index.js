@@ -39,6 +39,7 @@ function onItem(item) {
 
 app.post('/transactions', function (req, res) {
   console.log("Received " + req.body.length + " transactions")
+  console.log(req.query)
   req.body.map(onItem);
   res.status(200).send()
 })
@@ -46,8 +47,6 @@ app.post('/transactions', function (req, res) {
 app.get('/transactions/past', function(req, res) {
   res.send(transactions)
 })
-
-{23: { "Dave": 0.2 } }
 
 app.get('/transactions/future', function(req, res) {
   let confidence_store_month = {}
