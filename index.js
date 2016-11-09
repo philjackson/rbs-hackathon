@@ -13,6 +13,8 @@ var confidence_store_month = {}
 var runs
 var transactionInfo
 
+var month_confidence = [0,0,0.2,0.5,1.0,1.0]
+
 var bodyParser = require('body-parser')
 
 app.use(bodyParser.urlencoded({extended: false}))
@@ -50,10 +52,11 @@ function calculateFutureStore(){
   Object.keys(future_store).map(function(k) {
     future_store[k].map(function(v) {
       let date = new Date(v.transactionDateTime)
-      let year = dateFormat(date, "yyyy")
-      let month = dateFormat(date, "mm")
-      let day = dateFormat(date, "dd")
+      let year = parseInt(dateFormat(date, "yyyy"))
+      let month = parseInt(dateFormat(date, "mm"))
+      let day = parseInt(dateFormat(date, "dd"))
       let monthCounter = ((year - 1900) * 12) + month - 1
+      console.log(monthCounter)
 
       if (! (monthCounter in confidence_store_month)) {
         confidence_store_month[monthCounter] = {}
@@ -63,7 +66,9 @@ function calculateFutureStore(){
         confidence_store_month[monthCounter][v.transactionDescription] = {}
       }
       
+      seen = confidence_store_month[monthCounter][v.transactionDescription].seen
       confidence_store_month[monthCounter][v.transactionDescription] = {
+        seen : seen + 1,
         accountId : v.accountId,
         day : day,
         transactionAmount : v.transactionAmount,
@@ -82,10 +87,13 @@ function processMonthStore(store){
     if(Object.keys(store).length == 0)
         return
         
-    var sorted_months = Object.keys(store).sort().reverse();
-    let firstKey = sorted_months.shift()
     runs = {}
     transactionInfo = {}
+    future_transactions = []
+    
+    var sorted_months = Object.keys(store).sort().reverse();
+    let firstKey = sorted_months.shift()
+    
     
     let seed = Object.keys(store[firstKey])
     seed.forEach(function(des){
@@ -103,11 +111,36 @@ function processMonthStore(store){
         last = Object.keys(store[month])
     })
     
-    /*future_transactions={}
+    future_transactions=[]
     Object.keys(runs).forEach(function(description){
-        for(var month=firstKey+1; month < firstKey + futureMonths ; month++)
-        future_transactions.push(transactionInfo[des]
-    }*/
+        for(var i = 0; i < futureMonths ; i++){
+            
+            var month = parseInt(firstKey) + i + 1;
+            //mwaaaahhaahaaaaah
+            var realYear = 1900 + Math.floor(month/12)
+            var realMonth = 1 + (month % 12)
+            
+            var p = transactionInfo[description]
+            var runlength = runs[description]
+            var confidence
+            if(month_confidence.length < runlength)
+                confidence = 1
+            else
+                confidence = month_confidence[runlength-1]
+            
+            if(!confidence==0){
+                future_transactions.push( {
+                    accountId : p.accountId,
+                    transactionDateTime : new Date(realYear + '-' + realMonth + '-' + p.day + ' 00:00:00.000Z'),
+                    transactionAmount : p.transactionAmount,
+                    transactionType : p.transactionType,
+                    transactionDescription : p.transactionDescription,
+                    category : p.category,
+                    confidence
+                })
+            }
+        }
+    })
 }
 
 app.post('/transactions', function (req, res) {
@@ -123,11 +156,11 @@ app.get('/transactions/past', function(req, res) {
 })
 
 app.get('/transactions/future', function(req, res) {
-  res.send(futureTransactions)
+  res.send(future_transactions)
 })
 
 app.get('/debug', function(req, res) {
-  res.send(transactionInfo)
+  res.send(runs)
 })
 
 app.get('/', function (req, res) {
