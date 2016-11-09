@@ -100,15 +100,23 @@ function processMonthStore(store){
     let seed = Object.keys(store[firstKey])
     seed.forEach(function(des){
         if(store[firstKey][des].seen == 1)
-            runs[des] = 1
+            runs[des] = {seen:1, month:firstKey}
         transactionInfo[des] = store[firstKey][des]
     })
     
     last = seed
     sorted_months.forEach(function(month){
         Object.keys(store[month]).forEach(function(description){
-            if(last.indexOf(description)> -1 && store[month][description].seen == 1){
-                runs[description] = runs[description] + 1
+            
+            //ones we've seen before
+            if(description in runs && last.indexOf(description)> -1 && store[month][description].seen == 1){
+                runs[description].seen = runs[description].seen + 1
+            }
+            
+            //new ones
+            if(!(description in runs) && store[month][description].seen == 1){
+                runs[description] = {seen:1, month:month}
+                transactionInfo[description] = store[month][description]
             }
         })
         last = Object.keys(store[month])
@@ -118,13 +126,16 @@ function processMonthStore(store){
     Object.keys(runs).forEach(function(description){
         for(var i = 0; i < futureMonths ; i++){
             
-            var month = parseInt(firstKey) + i + 1;
+            var runlength = runs[description].seen
+            var runMonth = runs[description].month
+            
+            var month = parseInt(runMonth) + i + 1;
             //mwaaaahhaahaaaaah
             var realYear = 1900 + Math.floor(month/12)
             var realMonth = 1 + (month % 12)
             
             var p = transactionInfo[description]
-            var runlength = runs[description]
+            
             var confidence
             if(month_confidence.length < runlength)
                 confidence = 1
@@ -168,6 +179,18 @@ app.get('/transactions/future', function(req, res) {
 
 app.get('/debug', function(req, res) {
   res.send([confidence_store_month, runs])
+})
+
+app.get('/reset', function(req, res) {
+  var transactions = []
+  var future_transactions = []
+  var future_store = {}
+  var seen_payees = {}
+  var monthly_transactions = {}
+  var confidence_store_month = {}
+  var runs ={}
+  var transactionInfo = {}
+  res.status(200).json({action: "reset"})
 })
 
 app.get('/', function (req, res) {
