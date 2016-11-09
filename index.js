@@ -155,10 +155,14 @@ app.post('/transactions', function (req, res) {
 })
 
 app.get('/transactions/past', function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.send(transactions)
 })
 
 app.get('/transactions/future', function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.send(future_transactions)
 })
 
@@ -167,6 +171,8 @@ app.get('/debug', function(req, res) {
 })
 
 app.get('/', function (req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.status(200).json({hello: "world"})
 })
 
